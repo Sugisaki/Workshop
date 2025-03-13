@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:workshop/ChargingProgressIndicator.dart';
+import 'package:workshop/ChargingProgress2.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -107,6 +109,12 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
 
             ChargingProgressIndicator(),
+            ChargingProgress2(
+              value: 0.7, // 進捗度合い
+              color: Colors.orange,
+              strokeWidth: 15,
+              endCapRadius: 20,
+            ),
 
             const Text(
               'You have pushed the button this many times:',
