@@ -1,30 +1,38 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 
-class ChargingProgress2 extends StatefulWidget {
+class ChargingProgress extends StatefulWidget {
   final double value;
   final Color color;
   final Color backgroundColor;
   final double strokeWidth;
   final double endCapRadius;
+  final GlobalKey<ChargingProgressState> key; // GlobalKey を追加
 
-  ChargingProgress2({
+  ChargingProgress({
     required this.value,
     this.color = Colors.blue,
     this.backgroundColor = Colors.grey,
-    this.strokeWidth = 10.0,
-    this.endCapRadius = 15.0, // バーの幅より大きい円の半径
-  });
+    this.strokeWidth = 10.0, // 線の幅
+    this.endCapRadius = 15.0, // 円の半径
+    required this.key,
+  }) : super(key: key);
 
   @override
-  _ChargingProgress2State createState() =>
-      _ChargingProgress2State();
+  ChargingProgressState createState() =>
+      ChargingProgressState();
 }
 
-class _ChargingProgress2State extends State<ChargingProgress2>
+class ChargingProgressState extends State<ChargingProgress>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+
+  void resetAnimation() {
+    debugPrint("@@@ リセットアニメ @@@");
+    _controller.value = 0.0;
+    _controller.forward();
+  }
 
   @override
   void initState() {
@@ -42,7 +50,7 @@ class _ChargingProgress2State extends State<ChargingProgress2>
   }
 
   @override
-  void didUpdateWidget(ChargingProgress2 oldWidget) {
+  void didUpdateWidget(ChargingProgress oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.value != widget.value) {
       _animation = Tween<double>(begin: _animation.value, end: widget.value).animate(
@@ -127,8 +135,8 @@ class _CircularProgressBarPainter extends CustomPainter {
     final endCapAngle = startAngle + sweepAngle;
     final endCapX = center.dx + radius * cos(endCapAngle);
     final endCapY = center.dy + radius * sin(endCapAngle);
-
-    canvas.drawCircle(Offset(endCapX, endCapY), endCapRadius, endCapPaint);
+    double theRadius = strokeWidth * 1.2; // 先端の円の大きは線幅に対して
+    canvas.drawCircle(Offset(endCapX, endCapY), theRadius, endCapPaint);
   }
 
   @override

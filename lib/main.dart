@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:workshop/ChargingProgressIndicator.dart';
-import 'package:workshop/ChargingProgress2.dart';
+import 'package:workshop/ChargingProgress.dart';
 
 import 'package:workshop/ChargePage.dart';
 
@@ -36,9 +35,6 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      routes: {
-        '/charge_page': (BuildContext context) => ChargePage(),
-      },
     );
   }
 }
@@ -63,6 +59,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  // GlobalKey を作成
+  final GlobalKey<ChargingProgressState> _chargingProgressKey = GlobalKey<ChargingProgressState>();
 
   void _incrementCounter() {
     setState(() {
@@ -72,6 +70,8 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
+
+      _chargingProgressKey.currentState!.resetAnimation(); // アニメーション
     });
   }
 
@@ -113,12 +113,12 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
 
-            ChargingProgressIndicator(),
-            ChargingProgress2(
-              value: 0.7, // 進捗度合い
+            ChargingProgress(
+              value: 0.8, // 進捗度合い
               color: Colors.orange,
               strokeWidth: 15,
-              endCapRadius: 20,
+              endCapRadius: 100,
+              key: _chargingProgressKey,
             ),
 
             const Text(
@@ -133,10 +133,17 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
 
       persistentFooterButtons: [
-        ElevatedButton(
+        ElevatedButton( // 充電ボタン
           onPressed: () {
-            // 充電ボタン
-            Navigator.pushNamed(context, '/charge_page');
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChargePage(
+                  // 充電ができているようなアニメーションを表示
+                  startCharge: _chargingProgressKey.currentState!.resetAnimation
+                ),
+              ),
+            );
           },
           child: Text('充電'),
         ),
