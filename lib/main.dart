@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:workshop/ChargingProgressIndicator.dart';
 import 'package:workshop/ChargingProgress2.dart';
 
+import 'package:workshop/ChargePage.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -34,6 +36,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      routes: {
+        '/charge_page': (BuildContext context) => ChargePage(),
+      },
     );
   }
 }
@@ -126,6 +131,23 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+
+      persistentFooterButtons: [
+        ElevatedButton(
+          onPressed: () {
+            // 充電ボタン
+            Navigator.pushNamed(context, '/charge_page');
+          },
+          child: Text('充電'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            // ボタン2の処理
+          },
+          child: Text('Button 2'),
+        ),
+      ],
+
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
