@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:workshop/CustomSlideSwitch.dart';
 
 class ChargePage extends StatelessWidget {
   final Function() startCharge; // 充電開始
@@ -13,18 +14,13 @@ class ChargePage extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-
             Text('スライドで充電開始'),
-
-            // 充電開始ボタン
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context); // 画面を閉じる
+            CustomSlideSwitch(
+              onSlideRight: () {
                 startCharge(); // 充電開始
+                Navigator.pop(context); // 画面を閉じる
               },
-              child: Text("充電を開始する"),
             ),
-
           ],
         ),
       ),
