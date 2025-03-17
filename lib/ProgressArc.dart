@@ -1,0 +1,145 @@
+import 'dart:math' as math;
+import 'package:flutter/material.dart';
+
+// プログレスバー（円弧）
+class ProgressArc extends StatefulWidget {
+  final double progress; // 進捗度
+  final Color color; // 色
+  final double strokeWidth; // 線の太さ
+  final double endCapRadius; // 終端円の大きさ
+  final double startAngle; // 円弧の始点
+  final double endAngle; // 円弧の終点
+  final GlobalKey<ProgressArcState> key;
+
+  ProgressArc({
+    required this.progress,
+    required this.color,
+    this.strokeWidth = 10.0,
+    this.endCapRadius = 15.0,
+    this.startAngle = - math.pi * 1 / 2 +(math.pi * 0.2),
+    this.endAngle = math.pi * 3 / 2 -(math.pi * 0.2),
+    required this.key,
+  }) : super(key: key);
+
+  @override
+  ProgressArcState createState() => ProgressArcState();
+}
+
+class ProgressArcState extends State<ProgressArc>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+
+  void resetAnimation() {
+    debugPrint("@@@ リセットアニメ @@@");
+    _animationController.value = 0.0;
+    _animationController.forward();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 1000),
+    );
+    _animation = Tween<double>(begin: 0, end: widget.progress).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+    _animationController.forward();
+  }
+
+  @override
+  void didUpdateWidget(ProgressArc oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.progress != widget.progress) {
+      _animation = Tween<double>(begin: _animation.value, end: widget.progress).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+      );
+      _animationController.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return CustomPaint(
+          painter: _ProgressArcPainter(
+            value: _animation.value,
+            color: widget.color,
+            strokeWidth: widget.strokeWidth,
+            endCapRadius: widget.endCapRadius,
+            startAngle: widget.startAngle,
+            endAngle: widget.endAngle,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _ProgressArcPainter extends CustomPainter {
+  final double value;
+  final Color color;
+  final double strokeWidth;
+  final double endCapRadius;
+  final double startAngle;
+  final double endAngle;
+
+  _ProgressArcPainter({
+    required this.value,
+    required this.color,
+    required this.strokeWidth,
+    required this.endCapRadius,
+    required this.startAngle,
+    required this.endAngle,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Rect.fromCircle(
+      center: Offset(size.width / 2, size.height / 2),
+      radius: math.min(size.width, size.height) / 2 - strokeWidth / 2,
+    );
+
+    final backgroundPaint = Paint()
+      ..color = Colors.grey.shade300
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth;
+
+    canvas.drawArc(rect, startAngle, endAngle - startAngle, false, backgroundPaint);
+
+    final foregroundPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.butt;
+
+    final sweepAngle = (endAngle - startAngle) * value;
+    canvas.drawArc(rect, startAngle, sweepAngle, false, foregroundPaint);
+
+    final endCapPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    final radius = rect.shortestSide / 2; // ここで radius を取得
+    final endCapAngle = startAngle + sweepAngle;
+    final endCapX = rect.center.dx + radius * math.cos(endCapAngle);
+    final endCapY = rect.center.dy + radius * math.sin(endCapAngle);
+
+    canvas.drawCircle(Offset(endCapX, endCapY), endCapRadius, endCapPaint);
+  }
+
+  @override
+  bool shouldRepaint(_ProgressArcPainter oldDelegate) {
+    return oldDelegate.value != value || oldDelegate.color != color;
+  }
+}

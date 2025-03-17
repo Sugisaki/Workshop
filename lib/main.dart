@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:workshop/ChargingProgress.dart';
+import 'package:workshop/ProgressArc.dart';
+import 'dart:math' as math;
 
 import 'package:workshop/ChargePage.dart';
 
@@ -60,7 +61,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   // GlobalKey を作成
-  final GlobalKey<ChargingProgressState> _chargingProgressKey = GlobalKey<ChargingProgressState>();
+  final GlobalKey<ProgressArcState> _progressArcKey = GlobalKey<ProgressArcState>();
 
   void _incrementCounter() {
     setState(() {
@@ -71,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
 
-      _chargingProgressKey.currentState!.resetAnimation(); // アニメーション
+      _progressArcKey.currentState!.resetAnimation(); // アニメーション
     });
   }
 
@@ -112,15 +113,19 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-
-            ChargingProgress(
-              value: 0.8, // 進捗度合い
-              color: Colors.orange,
-              strokeWidth: 15,
-              endCapRadius: 100,
-              key: _chargingProgressKey,
+            Container(
+              width: 200,
+              height: 200,
+              child: ProgressArc(
+                progress: 0.75,
+                color: Colors.green,
+                strokeWidth: 12.0,
+                endCapRadius: 18.0,
+                //startAngle: math.pi * 3/2,
+                //endAngle: math.pi * 2,
+                key: _progressArcKey,
+              ),
             ),
-
             const Text(
               'You have pushed the button this many times:',
             ),
@@ -140,7 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
               MaterialPageRoute(
                 builder: (context) => ChargePage(
                   // 充電ができているようなアニメーションを表示
-                  startCharge: _chargingProgressKey.currentState!.resetAnimation
+                  startCharge: _progressArcKey.currentState!.resetAnimation
                 ),
               ),
             );
