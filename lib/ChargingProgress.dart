@@ -5,16 +5,16 @@ class ChargingProgress extends StatefulWidget {
   final double value;
   final Color color;
   final Color backgroundColor;
-  final double strokeWidth;
-  final double endCapRadius;
+  final double strokeWidth; // 線の幅
+  final double endCapRadius; // 円の半径
   final GlobalKey<ChargingProgressState> key; // GlobalKey を追加
 
   ChargingProgress({
     required this.value,
     this.color = Colors.blue,
     this.backgroundColor = Colors.grey,
-    this.strokeWidth = 10.0, // 線の幅
-    this.endCapRadius = 15.0, // 円の半径
+    this.strokeWidth = 10.0,
+    this.endCapRadius = 15.0,
     required this.key,
   }) : super(key: key);
 
@@ -102,15 +102,9 @@ class _CircularProgressBarPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = min(size.width, size.height) / 2 - strokeWidth / 2;
-    final startAngle = -pi / 2;
-    final sweepAngle = 2 * pi * value;
-
-    // 背景の円
-    final backgroundPaint = Paint()
-      ..color = backgroundColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth;
-    canvas.drawCircle(center, radius, backgroundPaint);
+    final startAngle = -pi / 2 +(pi * 0.2);
+    final endAngle = pi + pi / 2 -(pi * 0.2);
+    final sweepAngle = (endAngle - startAngle ) * value;
 
     // 進捗の円弧
     final foregroundPaint = Paint()
