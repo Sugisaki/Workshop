@@ -16,8 +16,8 @@ class ProgressArc extends StatefulWidget {
     required this.color,
     this.strokeWidth = 10.0,
     this.endCapRadius = 15.0,
-    this.startAngle = - math.pi * 1 / 2 +(math.pi * 0.2),
-    this.endAngle = math.pi * 3 / 2 -(math.pi * 0.2),
+    this.startAngle = - math.pi,
+    this.endAngle = 0,
     required this.key,
   }) : super(key: key);
 
@@ -109,13 +109,6 @@ class _ProgressArcPainter extends CustomPainter {
       center: Offset(size.width / 2, size.height / 2),
       radius: math.min(size.width, size.height) / 2 - strokeWidth / 2,
     );
-
-    final backgroundPaint = Paint()
-      ..color = Colors.grey.shade300
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth;
-
-    canvas.drawArc(rect, startAngle, endAngle - startAngle, false, backgroundPaint);
 
     final foregroundPaint = Paint()
       ..color = color
