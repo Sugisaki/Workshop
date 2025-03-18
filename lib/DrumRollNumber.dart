@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 /*
   TODO ドラムはタッチできないようにしよう
   TODO 桁が2桁じゃなかったらエラーにしよう
-  TODO 初期値が　00 になる問題あり
  */
 
 class DrumRollNumber extends StatefulWidget {
@@ -16,7 +15,6 @@ class DrumRollNumber extends StatefulWidget {
     this.initialNumbers = const [0, 0],
     this.fontSize = 60.0,
     this.textColor = Colors.white,
-
     required this.key
   }) : super(key: key);
 
@@ -53,7 +51,7 @@ class DrumRollNumberState extends State<DrumRollNumber> {
     for (int i = 0; i < controllers.length; i++) {
       controllers[i].animateToItem(
         numbers[i],
-        duration: Duration(milliseconds: 1200),
+        duration: const Duration(milliseconds: 1200),
         curve: Curves.easeInOut,
       );
     }
@@ -63,40 +61,38 @@ class DrumRollNumberState extends State<DrumRollNumber> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(controllers.length, (index) {
-            return Transform.translate( // 少し重ねて数字の間を狭くする
-              offset: Offset(-index * (widget.fontSize * 0.4), 0),
-              child: Container(
-                width: widget.fontSize,
-                height: double.infinity ,
-                //margin: EdgeInsets.symmetric(horizontal: 0),
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: ListWheelScrollView.useDelegate(
-                  controller: controllers[index],
-                  itemExtent: widget.fontSize + 10,
-                  physics: FixedExtentScrollPhysics(),
-                  childDelegate: ListWheelChildLoopingListDelegate(
-                    children: numbers[index].map((num) => Center(
-                      child: Text(
-                        num.toString(),
-                        style: TextStyle(
-                          color: widget.textColor,
-                          fontSize: widget.fontSize,
-                          fontWeight: FontWeight.normal),
-                      ),
-                    )).toList(),
-                  ),
+      body: Row(
+        // 数字のドラム（ホイール）を横並びで表示
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(controllers.length, (index) {
+          return Transform.translate(
+            // 横のドラムとの間隔を狭くしたいので、マイナスオフセット
+            offset: Offset(-index * widget.fontSize * 0.4, 0),
+            child: Container(
+              width: widget.fontSize,
+              height: double.infinity ,
+              decoration: const BoxDecoration(
+                color: Colors.transparent,
+              ),
+              child: ListWheelScrollView.useDelegate(
+                // 数字のドラム（ホイール）
+                controller: controllers[index],
+                itemExtent: widget.fontSize + 10,
+                physics: const FixedExtentScrollPhysics(),
+                childDelegate: ListWheelChildLoopingListDelegate(
+                  children: numbers[index].map((int num) => Text(
+                    num.toString(),
+                    style: TextStyle(
+                      color: widget.textColor,
+                      fontSize: widget.fontSize,
+                      fontWeight: FontWeight.normal
+                    ),
+                  )).toList(),
                 ),
               ),
-            );
-          }),
-        ),
+            ),
+          );
+        }),
       ),
     );
   }
