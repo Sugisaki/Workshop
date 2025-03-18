@@ -37,6 +37,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   final GlobalKey<ProgressArcState> _progressArcKey = GlobalKey<ProgressArcState>();
+  final GlobalKey<DrumRollNumberState> _drumKey = GlobalKey<DrumRollNumberState>();
 
   void _incrementCounter() {
     setState(() {
@@ -48,7 +49,12 @@ class _MyHomePageState extends State<MyHomePage> {
       _counter++;
 
       _progressArcKey.currentState!.resetAnimation(); // アニメーション
+      _drumKey.currentState!.startRolling([0, 9]); // アニメーション
     });
+  }
+  void _startAnimation() {
+    _progressArcKey.currentState!.resetAnimation(); // アニメーション
+    _drumKey.currentState!.startRolling([0, 9]); // アニメーション
   }
 
   @override
@@ -83,25 +89,30 @@ class _MyHomePageState extends State<MyHomePage> {
               Stack(
                 children: [
                   SizedBox(
-                    width: 300,
-                    height: 300,
+                    width: 240,
+                    height: 240,
                     child: ProgressArc(
-                      progress: 0.75,
+                      progress: 1.00,
                       color: Colors.green,
                       strokeWidth: 12.0,
                       endCapRadius: 18.0,
-                      startAngle: - math.pi * 1 / 2 +(math.pi * 0.2),
-                      endAngle: math.pi * 3 / 2 -(math.pi * 0.2),
+                      startAngle: - math.pi * 1 / 2 +(math.pi * 0.2), // 1時の方向
+                      endAngle: math.pi * 3 / 2 -(math.pi * 0.2), // 11時の方向
                       key: _progressArcKey,
                     ),
                   ),
                   Positioned(
-                    top: 50,
-                    left: 50,
+                    top: 80,
+                    left: 20,
                     child: SizedBox(
                         width: 200,
-                        height: 200,
-                        child: DrumRollNumber()
+                        height: 80,
+                        child: DrumRollNumber(
+                          initialNumbers: const [9, 0],
+                          //textColor: Colors.white,
+                          fontSize: 60.0,
+                          key: _drumKey,
+                        )
                     )
                   )
                 ],
@@ -123,8 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
               context,
               MaterialPageRoute(
                 builder: (context) => ChargePage(
-                  // 充電ができているようなアニメーションを表示
-                  startCharge: _progressArcKey.currentState!.resetAnimation
+                  startCharge: _startAnimation
                 ),
               ),
             );
@@ -156,8 +166,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ChargePage(
-                    // 充電ができているようなアニメーションを表示
-                      startCharge: _progressArcKey.currentState!.resetAnimation
+                    startCharge: _startAnimation
                   ),
                 ),
               );
