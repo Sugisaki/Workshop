@@ -5,6 +5,7 @@ import 'package:workshop/ProgressArc.dart';
 import 'package:workshop/ChargePage.dart';
 import 'package:workshop/DrumRollNumber.dart';
 import 'package:workshop/MainFooter.dart';
+import 'package:workshop/CustomSlideSwitch.dart';
 
 void main() {
   runApp(const MyApp());
@@ -93,9 +94,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     height: 240,
                     child: ProgressArc(
                       progress: 1.00,
-                      color: Colors.green,
+                      color: Colors.white,
                       strokeWidth: 12.0,
-                      endCapRadius: 18.0,
+                      endCapRadius: 14.0,
                       startAngle: - math.pi * 1 / 2 +(math.pi * 0.2), // 1時の方向
                       endAngle: math.pi * 3 / 2 -(math.pi * 0.2), // 11時の方向
                       key: _progressArcKey,
@@ -116,6 +117,20 @@ class _MyHomePageState extends State<MyHomePage> {
                     )
                   )
                 ],
+              ),
+
+              CustomSlideSwitch(
+                initalRight: true, // ノブは右に寄せておく
+                trackColor: Color(0xFFC78525),
+                knobColor: Colors.white,
+                coverColor: Color(0xFFC78525),
+                trackTextToLeft: 'スライドで充電完了',
+                onSlideRight: () {
+                  print("右>>>");
+                },
+                onSlideLeft: () {
+                  print("<<<左");
+                },
               ),
 
               Text(

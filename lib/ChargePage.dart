@@ -16,6 +16,7 @@ class ChargePage extends StatelessWidget {
           children: [
             Text('スライドで充電開始'),
             CustomSlideSwitch(
+              trackTextToRight: 'スライドで充電開始',
               onSlideRight: () {
                 startCharge(); // 充電開始
                 Navigator.pop(context); // 画面を閉じる

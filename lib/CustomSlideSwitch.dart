@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// ととと
+// カスタムスライドスイッチ
 class CustomSlideSwitch extends StatefulWidget {
   final double trackWidth; // トラックのサイズ
   final double knobSize; // ノブのサイズ
@@ -8,10 +8,12 @@ class CustomSlideSwitch extends StatefulWidget {
   final Color trackColor; // トラックの色
   final Color knobColor; // ノブの色
   final Color coverColor; // ノブの下のカバーの色
-  final String trackText; // トラックに表示する文字
+  final String trackTextToRight; // トラックの右側に表示する文字
+  final String trackTextToLeft; // トラックの左側に表示する文字
   final double fontSize; // フォントサイズ
   final VoidCallback? onSlideLeft; // 左端コールバック関数
   final VoidCallback? onSlideRight; // 右端コールバック関数
+  final bool initalRight; // ノブの初期の位置
 
   const CustomSlideSwitch({
     super.key,
@@ -21,10 +23,12 @@ class CustomSlideSwitch extends StatefulWidget {
     this.trackColor = Colors.teal,
     this.knobColor = Colors.white,
     this.coverColor = Colors.orange,
-    this.trackText = 'スライドで充電開始',
+    this.trackTextToRight = '',
+    this.trackTextToLeft = '',
     this.onSlideLeft,
     this.onSlideRight,
-    this.fontSize = 14,
+    this.fontSize = 16,
+    this.initalRight = false,
   });
 
   @override
@@ -36,10 +40,14 @@ class _CustomSlideSwitchState extends State<CustomSlideSwitch>
   late AnimationController _animationController;
   late Animation<double> _animation;
   double _dragPosition = 0;
+  late bool _isRight = widget.initalRight;
 
   @override
   void initState() {
     super.initState();
+    if (widget.initalRight){
+      _dragPosition = widget.trackWidth - widget.knobSize;
+    }
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300), // アニメーションの速度
@@ -52,12 +60,18 @@ class _CustomSlideSwitchState extends State<CustomSlideSwitch>
       });
     _animationController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        // アニメーション完了時にコールバックを実行
+        // ノブのスライドが終了
         if (_animation.value == 0 && widget.onSlideLeft != null) {
-          widget.onSlideLeft!();
+          setState(() {
+            _isRight = false; // ノブの位置は左
+          });
+          widget.onSlideLeft!(); // コールバックを実行
         } else if (_animation.value == widget.trackWidth - widget.knobSize &&
             widget.onSlideRight != null) {
-          widget.onSlideRight!();
+          setState(() {
+            _isRight = true; // ノブの位置は右
+          });
+          widget.onSlideRight!(); // コールバックを実行
         }
       }
     });
@@ -112,12 +126,14 @@ class _CustomSlideSwitchState extends State<CustomSlideSwitch>
             // トラック、カバー、ノブを重ねて配置
             children: [
               Align(
-                alignment: Alignment.centerLeft,
+                alignment: _isRight ? Alignment.centerRight : Alignment.centerLeft,
                 child: Padding(
                   // トラックの文字
-                  padding: EdgeInsets.only(left: widget.knobSize + widget.frameSize + widget.fontSize / 2 ),
+                  padding: _isRight
+                      ? EdgeInsets.only(right: widget.knobSize + widget.frameSize + widget.fontSize / 2)
+                      : EdgeInsets.only(left: widget.knobSize + widget.frameSize + widget.fontSize / 2),
                   child: Text(
-                    widget.trackText,
+                    _isRight ? widget.trackTextToLeft: widget.trackTextToRight,
                     style: TextStyle(
                       fontSize: widget.fontSize,
                       fontWeight: FontWeight.bold,
@@ -128,9 +144,11 @@ class _CustomSlideSwitchState extends State<CustomSlideSwitch>
               ),
               Positioned(
                 // カバー
-                left: 0,
+                left: _isRight ? _dragPosition + widget.knobSize / 2 : 0,
                 child: Container(
-                  width: _dragPosition + widget.knobSize,
+                  width: _isRight
+                      ? widget.trackWidth - (_dragPosition + widget.knobSize)
+                      : _dragPosition + widget.knobSize,
                   height: widget.knobSize,
                   decoration: BoxDecoration(
                     color: widget.coverColor,

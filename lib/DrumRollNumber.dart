@@ -29,17 +29,16 @@ class DrumRollNumberState extends State<DrumRollNumber> {
     List.generate(10, (index) => index), // 左の桁
     List.generate(10, (index) => index), // 右の桁
   ];
-
-  final List<FixedExtentScrollController> controllers = [
-    FixedExtentScrollController(initialItem: 0),
-    FixedExtentScrollController(initialItem: 0),
-  ];
+  late final List<FixedExtentScrollController> controllers;
 
   @override
   void initState() {
     super.initState();
+    controllers = [
+      FixedExtentScrollController(initialItem: widget.initialNumbers[0]),
+      FixedExtentScrollController(initialItem: widget.initialNumbers[1]),
+    ];
     initRolling(); // 最初の位置に戻す
-    print("@@@ initState @@@");
   }
 
   void initRolling() {
