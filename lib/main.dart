@@ -106,13 +106,31 @@ class _MyHomePageState extends State<MyHomePage> {
                     top: 80,
                     left: 20,
                     child: SizedBox(
-                        width: 200,
+                        width: 240,
                         height: 80,
-                        child: DrumRollNumber(
-                          initialNumbers: const [9, 0],
-                          //textColor: Colors.white,
-                          fontSize: 60.0,
-                          key: _drumKey,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: DrumRollNumber(
+                                initialNumbers: const [9, 0],
+                                //textColor: Colors.white,
+                                fontSize: 60.0,
+                                key: _drumKey,
+                              ),
+                            ),
+                            const Expanded(
+                              child: Align(
+                                alignment: Alignment.bottomLeft,
+                                child: Text("%",
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.normal
+                                  )
+                                ),
+                              ),
+                            ),
+                          ],
                         )
                     )
                   )

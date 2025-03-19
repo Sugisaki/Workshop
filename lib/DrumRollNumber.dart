@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /*
-  TODO ドラムはタッチできないようにしよう
+  TODO 桁を増やせるようにするか、3桁にするか
   TODO 桁が2桁じゃなかったらエラーにしよう
  */
 
@@ -59,15 +59,18 @@ class DrumRollNumberState extends State<DrumRollNumber> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Row(
+    return Container(
+      color: Colors.transparent,
+      child: Row(
         // 数字のドラム（ホイール）を横並びで表示
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(controllers.length, (index) {
           return Transform.translate(
-            // 横のドラムとの間隔を狭くしたいので、マイナスオフセット
-            offset: Offset(-index * widget.fontSize * 0.4, 0),
+            // 横のドラムとの間隔を狭くしたいので、マイナスオフセットで右に詰める
+            offset: Offset(
+              (controllers.length -1 -index)* widget.fontSize * 0.4,
+              0
+            ),
             child: Container(
               width: widget.fontSize,
               height: double.infinity ,
@@ -77,7 +80,7 @@ class DrumRollNumberState extends State<DrumRollNumber> {
               child: ListWheelScrollView.useDelegate(
                 // 数字のドラム（ホイール）
                 controller: controllers[index],
-                itemExtent: widget.fontSize + 10,
+                itemExtent: widget.fontSize * 1.2,
                 physics: const FixedExtentScrollPhysics(),
                 childDelegate: ListWheelChildLoopingListDelegate(
                   children: numbers[index].map((int num) => Text(
