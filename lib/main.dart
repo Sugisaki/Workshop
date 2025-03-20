@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:math' as math;
 
 import 'package:workshop/ProgressArc.dart';
@@ -6,9 +7,16 @@ import 'package:workshop/ChargePage.dart';
 import 'package:workshop/DrumRollNumber.dart';
 import 'package:workshop/MainFooter.dart';
 import 'package:workshop/CustomSlideSwitch.dart';
+import 'package:workshop/EnagyInfo.dart';
+import 'package:workshop/ChargingButtons.dart';
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp, // 縦向きのみ許可
+  ]).then((_) {
+    runApp(MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -17,44 +25,26 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   final GlobalKey<ProgressArcState> _progressArcKey =
       GlobalKey<ProgressArcState>();
   final GlobalKey<DrumRollNumberState> _drumKey =
       GlobalKey<DrumRollNumberState>();
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-
-      _progressArcKey.currentState!.resetAnimation(); // アニメーション
-      _drumKey.currentState!.startRolling([0, 9]); // アニメーション
-    });
-  }
 
   void _startAnimation() {
     _progressArcKey.currentState!.resetAnimation(); // アニメーション
@@ -63,128 +53,194 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    // 各テキストスタイルのフォントサイズを確認
+    print('Headline Large: ${textTheme.headlineLarge?.fontSize}');
+    print('Headline Medium: ${textTheme.headlineMedium?.fontSize}');
+    print('Headline Small: ${textTheme.headlineSmall?.fontSize}');
+    print('Title Large: ${textTheme.titleLarge?.fontSize}');
+    print('Title Medium: ${textTheme.titleMedium?.fontSize}');
+    print('Title Small: ${textTheme.titleSmall?.fontSize}');
+    print('Body Large: ${textTheme.bodyLarge?.fontSize}');
+    print('Body Medium: ${textTheme.bodyMedium?.fontSize}');
+    print('Body Small: ${textTheme.bodySmall?.fontSize}');
+    print('Label Large: ${textTheme.labelLarge?.fontSize}');
+    print('Label Medium: ${textTheme.labelMedium?.fontSize}');
+    print('Label Small: ${textTheme.labelSmall?.fontSize}');
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              // 背景の緑色のグラデーション
-              Color(0xFF3D8F60),
-              Color(0xFF49706E),
-              Color(0xFF3C8766),
-            ],
-            stops: [
-              0.0,
-              0.6,
-              1.0,
-            ],
+      body: SafeArea(
+        child: Container(
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                // 背景の緑色のグラデーション
+                Color(0xFF3D8F60),
+                Color(0xFF49706E),
+                Color(0xFF3C8766),
+              ],
+              stops: [
+                0.0,
+                0.6,
+                1.0,
+              ],
+            ),
           ),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Stack(
-                children: [
-                  // プログレス円弧
-                  SizedBox(
-                    width: 240,
-                    height: 240,
-                    child: ProgressArc(
-                      progress: 1.00,
-                      color: Colors.white,
-                      strokeWidth: 12.0,
-                      endCapRadius: 14.0,
-                      startAngle: -math.pi * 1 / 2 + (math.pi * 0.2), // 1時の方向
-                      endAngle: math.pi * 3 / 2 - (math.pi * 0.2), // 11時の方向
-                      key: _progressArcKey,
-                    ),
-                  ),
-                  Positioned(
-                    top: 80,
-                    left: 20,
-                    child: SizedBox(
-                      width: 240,
-                      height: 80,
-                      child: Row(
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              print("@@@@幅　　${constraints.maxWidth}");
+              print("@@@ 高さ　${constraints.maxWidth}");
+              double _screenWidth = constraints.maxWidth;
+              double _progressArcSize = _screenWidth * 0.57;
+              double _slideSize = _screenWidth * 0.71;
+
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  // 充電中マーク
+                  Container(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
                         children: [
-                          // ドラムロール
-                          Expanded(
-                            child: DrumRollNumber(
-                              initialNumbers: const [9, 0],
-                              //textColor: Colors.white,
-                              fontSize: 60.0,
-                              key: _drumKey,
+                          Container(
+                            width: 38,
+                            height: 38,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFE6CF00),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Center(
+                              child: Icon(Icons.bolt, size: 30, color: Color(0xFF3D8F60)),
                             ),
                           ),
-                          // 単位 %
-                          const Expanded(
-                            child: Align(
-                              alignment: Alignment.bottomLeft,
-                              child: Text(
-                                "%",
-                                style: TextStyle(
-                                  fontSize: 30,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              ),
-                            ),
-                          ),
+                          Text("ただいま充電中",
+                              style: TextStyle(
+                                fontSize: textTheme.labelSmall?.fontSize,
+                                color: Colors.white,
+                              )
+                          )
                         ],
                       ),
                     ),
                   ),
+                  Stack(
+                    children: [
+                      // プログレス円弧
+                      SizedBox(
+                        width: _progressArcSize,
+                        height: _progressArcSize,
+                        child: ProgressArc(
+                          progress: 1.00,
+                          color: Colors.white,
+                          strokeWidth: 9.0,
+                          endCapRadius: 10.0,
+                          startAngle: -math.pi * 1 / 2 + (math.pi * 0.2), // 1時の方向
+                          endAngle: math.pi * 3 / 2 - (math.pi * 0.2), // 11時の方向
+                          key: _progressArcKey,
+                        ),
+                      ),
+                      Positioned(
+                        top: _progressArcSize / 4,
+                        left: _screenWidth / 12,
+                        child: SizedBox(
+                          width: _progressArcSize,
+                          height: _progressArcSize / 3, //_screenWidth / 6,
+                          child: Row(
+                            children: [
+                              // ドラムロール
+                              Expanded(
+                                child: DrumRollNumber(
+                                  initialNumbers: const [9, 0],
+                                  //textColor: Colors.white,
+                                  fontSize: _screenWidth / 8,
+                                  key: _drumKey,
+                                ),
+                              ),
+                              // 単位 %
+                              Expanded(
+                                child: Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text(
+                                    "%",
+                                    style: TextStyle(
+                                      fontSize: _screenWidth / 20,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      // 残り分
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: _progressArcSize / 4,
+                        child: Container(
+                          //color: Colors.amberAccent,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text("残り",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              Container(
+                                width: 20,
+                                child: Text(" 0",
+                                  style: TextStyle(
+                                    fontSize: textTheme.bodyLarge?.fontSize,
+                                    color: Colors.white
+                                  ),
+                                ),
+                              ),
+                              const Text("分",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16.0),
+                  // スライドスイッチ
+                  CustomSlideSwitch(
+                    trackWidth: _slideSize,
+                    knobSize: _slideSize / 4,
+                    frameSize: _slideSize / 20,
+                    fontSize: _slideSize / 20,
+                    initalRight: true, // ノブは右に寄せておく
+                    trackColor: const Color(0xFFC78525),
+                    knobColor: Colors.white,
+                    coverColor: const Color(0xFFC78525),
+                    trackTextToLeft: 'スライドで充電完了',
+                    onSlideRight: () {
+                      print("右>>>");
+                    },
+                    onSlideLeft: () {
+                      print("<<<左");
+                    },
+                  ),
+                  const SizedBox(height: 16.0),
+                  // 情報表示
+                  EnergyInfo(screenWidth: _screenWidth),
+                  const SizedBox(height: 16.0),
+                  // 充電ボタン
+                  ChargingButtons(screenWidth: _screenWidth),
                 ],
-              ),
-              // スライドスイッチ
-              CustomSlideSwitch(
-                initalRight: true, // ノブは右に寄せておく
-                trackColor: const Color(0xFFC78525),
-                knobColor: Colors.white,
-                coverColor: const Color(0xFFC78525),
-                trackTextToLeft: 'スライドで充電完了',
-                onSlideRight: () {
-                  print("右>>>");
-                },
-                onSlideLeft: () {
-                  print("<<<左");
-                },
-              ),
-              Text(
-                '$_counter',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-            ],
+              );
+            },
           ),
         ),
       ),
-      persistentFooterButtons: [
-        ElevatedButton(
-          // TODO 中央に自動車のボタンを設置
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ChargePage(startCharge: _startAnimation),
-              ),
-            );
-          },
-          child: Text('充電'),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            // ボタン2の処理
-          },
-          child: Text('Button 2'),
-        ),
-      ],
       // フッター
       bottomNavigationBar: MainFooter(
         buttons: [
@@ -196,7 +252,7 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
           FooterButtonItem(
-            icon: Icons.charging_station,
+            icon: Icons.bolt,
             label: '充電',
             onPressed: () {
               Navigator.push(
@@ -224,11 +280,26 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
+      // フローティングボタンに自動車アイコン（アニメーションをスタート）
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: _startAnimation,
         tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(36.0),
+          side: const BorderSide(
+            color: Color(0xFF3C8C60),
+            width: 4.0,
+          ),
+        ),
+        elevation: 10,
+        child: const Icon(
+          Icons.directions_car_filled_outlined,
+          color: Color(0xFF3C8C60),
+          size: 36,
+        ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

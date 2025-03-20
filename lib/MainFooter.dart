@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 class MainFooter extends StatelessWidget {
   final List<FooterButtonItem> buttons;
-
-  MainFooter({required this.buttons});
+  const MainFooter({super.key,
+    required this.buttons,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xFF476E6F),
-      padding: EdgeInsets.symmetric(vertical: 16.0),
+      color: const Color(0xFF476E6F),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -25,29 +25,26 @@ class MainFooter extends StatelessWidget {
   }
 
   Widget _buildFooterButton(FooterButtonItem item) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: TextButton(
-        onPressed: item.onPressed, // 引数で渡された処理を呼び出す
-        style: TextButton.styleFrom(
-          backgroundColor: Color(0xFF476E6F),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(0),
+    return TextButton(
+      onPressed: item.onPressed, // ボタンが押されたときの処理
+      style: TextButton.styleFrom(
+        backgroundColor: const Color(0xFF476E6F),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(0),
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Icon(
+            item.icon,
+            color: Colors.white,
           ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Icon(
-              item.icon,
-              color: Colors.white,
-            ),
-            Text(
-              item.label,
-              style: TextStyle(color: Colors.white),
-            ),
-          ],
-        ),
+          Text(
+            item.label,
+            style: TextStyle(color: Colors.white),
+          ),
+        ],
       ),
     );
   }

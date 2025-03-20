@@ -12,22 +12,24 @@ class ChargePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Charge Page'),
       ),
-      body: Center(
-        child: Column(
-          children: [
-            Text('スライドで充電開始'),
-            CustomSlideSwitch(
-              trackTextToRight: 'スライドで充電開始',
-              onSlideRight: () {
-                // ダイアログを挟む
-                _showCustomDialog(context, () {
-                      startCharge(); // 充電開始
-                      Navigator.pop(context); // 画面を閉じる
-                    }
-                );
-              },
-            ),
-          ],
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            children: [
+              const Text('スライドで充電開始'),
+              CustomSlideSwitch(
+                trackTextToRight: 'スライドで充電開始',
+                onSlideRight: () {
+                  // ダイアログを挟む
+                  _showCustomDialog(context, () {
+                        startCharge(); // 充電開始
+                        Navigator.pop(context); // 画面を閉じる
+                      }
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -86,7 +88,7 @@ class ChargePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                   ],
                 ),
               ),
