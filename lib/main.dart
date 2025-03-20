@@ -37,8 +37,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  final GlobalKey<ProgressArcState> _progressArcKey = GlobalKey<ProgressArcState>();
-  final GlobalKey<DrumRollNumberState> _drumKey = GlobalKey<DrumRollNumberState>();
+  final GlobalKey<ProgressArcState> _progressArcKey =
+      GlobalKey<ProgressArcState>();
+  final GlobalKey<DrumRollNumberState> _drumKey =
+      GlobalKey<DrumRollNumberState>();
 
   void _incrementCounter() {
     setState(() {
@@ -53,6 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _drumKey.currentState!.startRolling([0, 9]); // アニメーション
     });
   }
+
   void _startAnimation() {
     _progressArcKey.currentState!.resetAnimation(); // アニメーション
     _drumKey.currentState!.startRolling([0, 9]); // アニメーション
@@ -70,7 +73,8 @@ class _MyHomePageState extends State<MyHomePage> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [ // 背景の緑色のグラデーション
+            colors: [
+              // 背景の緑色のグラデーション
               Color(0xFF3D8F60),
               Color(0xFF49706E),
               Color(0xFF3C8766),
@@ -82,13 +86,13 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Stack(
                 children: [
+                  // プログレス円弧
                   SizedBox(
                     width: 240,
                     height: 240,
@@ -97,8 +101,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       color: Colors.white,
                       strokeWidth: 12.0,
                       endCapRadius: 14.0,
-                      startAngle: - math.pi * 1 / 2 +(math.pi * 0.2), // 1時の方向
-                      endAngle: math.pi * 3 / 2 -(math.pi * 0.2), // 11時の方向
+                      startAngle: -math.pi * 1 / 2 + (math.pi * 0.2), // 1時の方向
+                      endAngle: math.pi * 3 / 2 - (math.pi * 0.2), // 11時の方向
                       key: _progressArcKey,
                     ),
                   ),
@@ -106,42 +110,45 @@ class _MyHomePageState extends State<MyHomePage> {
                     top: 80,
                     left: 20,
                     child: SizedBox(
-                        width: 240,
-                        height: 80,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: DrumRollNumber(
-                                initialNumbers: const [9, 0],
-                                //textColor: Colors.white,
-                                fontSize: 60.0,
-                                key: _drumKey,
-                              ),
+                      width: 240,
+                      height: 80,
+                      child: Row(
+                        children: [
+                          // ドラムロール
+                          Expanded(
+                            child: DrumRollNumber(
+                              initialNumbers: const [9, 0],
+                              //textColor: Colors.white,
+                              fontSize: 60.0,
+                              key: _drumKey,
                             ),
-                            const Expanded(
-                              child: Align(
-                                alignment: Alignment.bottomLeft,
-                                child: Text("%",
-                                  style: TextStyle(
-                                    fontSize: 30,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.normal
-                                  )
+                          ),
+                          // 単位 %
+                          const Expanded(
+                            child: Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Text(
+                                "%",
+                                style: TextStyle(
+                                  fontSize: 30,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.normal,
                                 ),
                               ),
                             ),
-                          ],
-                        )
-                    )
-                  )
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
-
+              // スライドスイッチ
               CustomSlideSwitch(
                 initalRight: true, // ノブは右に寄せておく
-                trackColor: Color(0xFFC78525),
+                trackColor: const Color(0xFFC78525),
                 knobColor: Colors.white,
-                coverColor: Color(0xFFC78525),
+                coverColor: const Color(0xFFC78525),
                 trackTextToLeft: 'スライドで充電完了',
                 onSlideRight: () {
                   print("右>>>");
@@ -150,7 +157,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   print("<<<左");
                 },
               ),
-
               Text(
                 '$_counter',
                 style: Theme.of(context).textTheme.headlineMedium,
@@ -159,16 +165,14 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-
       persistentFooterButtons: [
-        ElevatedButton( // 充電ボタン
+        ElevatedButton(
+          // TODO 中央に自動車のボタンを設置
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ChargePage(
-                  startCharge: _startAnimation
-                ),
+                builder: (context) => ChargePage(startCharge: _startAnimation),
               ),
             );
           },
@@ -181,7 +185,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Text('Button 2'),
         ),
       ],
-
+      // フッター
       bottomNavigationBar: MainFooter(
         buttons: [
           FooterButtonItem(
@@ -198,9 +202,8 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ChargePage(
-                    startCharge: _startAnimation
-                  ),
+                  builder: (context) =>
+                      ChargePage(startCharge: _startAnimation),
                 ),
               );
             },
@@ -221,12 +224,11 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }
