@@ -93,9 +93,9 @@ class _MyHomePageState extends State<MyHomePage> {
             builder: (BuildContext context, BoxConstraints constraints) {
               print("@@@@幅　　${constraints.maxWidth}");
               print("@@@ 高さ　${constraints.maxWidth}");
-              double _screenWidth = constraints.maxWidth;
-              double _progressArcSize = _screenWidth * 0.57;
-              double _slideSize = _screenWidth * 0.71;
+              double screenWidth = constraints.maxWidth;
+              double progressArcSize = screenWidth * 0.57;
+              double slideSize = screenWidth * 0.71;
 
               return Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -132,8 +132,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: [
                       // プログレス円弧
                       SizedBox(
-                        width: _progressArcSize,
-                        height: _progressArcSize,
+                        width: progressArcSize,
+                        height: progressArcSize,
                         child: ProgressArc(
                           progress: 1.00,
                           color: Colors.white,
@@ -145,11 +145,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       Positioned(
-                        top: _progressArcSize / 4,
-                        left: _screenWidth / 12,
+                        top: progressArcSize / 4,
+                        left: screenWidth / 12,
                         child: SizedBox(
-                          width: _progressArcSize,
-                          height: _progressArcSize / 3, //_screenWidth / 6,
+                          width: progressArcSize,
+                          height: progressArcSize / 3, //_screenWidth / 6,
                           child: Row(
                             children: [
                               // ドラムロール
@@ -157,7 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 child: DrumRollNumber(
                                   initialNumbers: const [9, 0],
                                   //textColor: Colors.white,
-                                  fontSize: _screenWidth / 8,
+                                  fontSize: screenWidth / 8,
                                   key: _drumKey,
                                 ),
                               ),
@@ -168,7 +168,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   child: Text(
                                     "%",
                                     style: TextStyle(
-                                      fontSize: _screenWidth / 20,
+                                      fontSize: screenWidth / 20,
                                       color: Colors.white,
                                       fontWeight: FontWeight.normal,
                                     ),
@@ -183,7 +183,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Positioned(
                         left: 0,
                         right: 0,
-                        bottom: _progressArcSize / 4,
+                        bottom: progressArcSize / 4,
                         child: Container(
                           //color: Colors.amberAccent,
                           child: Row(
@@ -213,10 +213,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   const SizedBox(height: 16.0),
                   // スライドスイッチ
                   CustomSlideSwitch(
-                    trackWidth: _slideSize,
-                    knobSize: _slideSize / 4,
-                    frameSize: _slideSize / 20,
-                    fontSize: _slideSize / 20,
+                    trackWidth: slideSize,
+                    knobSize: slideSize / 4,
+                    frameSize: slideSize / 20,
+                    fontSize: slideSize / 20,
                     initalRight: true, // ノブは右に寄せておく
                     trackColor: const Color(0xFFC78525),
                     knobColor: Colors.white,
@@ -231,10 +231,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   const SizedBox(height: 16.0),
                   // 情報表示
-                  EnergyInfo(screenWidth: _screenWidth),
+                  EnergyInfo(screenWidth: screenWidth),
                   const SizedBox(height: 16.0),
                   // 充電ボタン
-                  ChargingButtons(screenWidth: _screenWidth),
+                  ChargingButtons(screenWidth: screenWidth),
                 ],
               );
             },
