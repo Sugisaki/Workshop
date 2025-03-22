@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class DrumRollNumber extends StatefulWidget {
+class DrumRollNumbers extends StatefulWidget {
   final List<int> initialNumbers; // 数字の初期値
   final double fontSize; // フォントサイズ
   final Color textColor; // テキスト色
   final int columnNum; // カラム数
-  final GlobalKey<DrumRollNumberState> key;
+  final GlobalKey<DrumRollNumbersState> key;
 
-  const DrumRollNumber({
+  const DrumRollNumbers({
     this.initialNumbers = const [0, 0],
     this.fontSize = 60.0,
     this.textColor = Colors.white,
@@ -16,10 +16,10 @@ class DrumRollNumber extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  DrumRollNumberState createState() => DrumRollNumberState();
+  DrumRollNumbersState createState() => DrumRollNumbersState();
 }
 
-class DrumRollNumberState extends State<DrumRollNumber> {
+class DrumRollNumbersState extends State<DrumRollNumbers> {
   late final List<List<int>> numbers;
   late final List<FixedExtentScrollController> controllers;
 

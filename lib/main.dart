@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math' as math;
 
-import 'package:workshop/ProgressArc.dart';
+import 'package:workshop/widgets/ProgressArc.dart';
 import 'package:workshop/ChargePage.dart';
-import 'package:workshop/DrumRollNumber.dart';
-import 'package:workshop/MainFooter.dart';
-import 'package:workshop/CustomSlideSwitch.dart';
-import 'package:workshop/EnagyInfo.dart';
-import 'package:workshop/ChargingButtons.dart';
+import 'package:workshop/widgets/DrumRollNumbers.dart';
+import 'package:workshop/widgets/MainFooter.dart';
+import 'package:workshop/widgets/CustomSlideSwitch.dart';
+import 'package:workshop/widgets/EnergyInfo.dart';
+import 'package:workshop/widgets/MainButtons.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,8 +43,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final GlobalKey<ProgressArcState> _progressArcKey =
       GlobalKey<ProgressArcState>();
-  final GlobalKey<DrumRollNumberState> _drumKey =
-      GlobalKey<DrumRollNumberState>();
+  final GlobalKey<DrumRollNumbersState> _drumKey =
+      GlobalKey<DrumRollNumbersState>();
 
   void _startAnimation() {
     _progressArcKey.currentState!.resetAnimation(); // アニメーション
@@ -173,7 +173,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           width: progressArcSize * 2/3 , // 幅　2/3
                           child: Container(
                             color: Colors.transparent,
-                            child: DrumRollNumber(
+                            child: DrumRollNumbers(
                               columnNum: 2,
                               initialNumbers: const [9, 0],
                               textColor: Colors.white,
@@ -259,7 +259,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   EnergyInfo(screenWidth: screenWidth),
                   const SizedBox(height: 16.0),
                   // 充電ボタン
-                  ChargingButtons(screenWidth: screenWidth),
+                  MainButtons(screenWidth: screenWidth),
                 ],
               );
             },

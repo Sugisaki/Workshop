@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class ChargingButtons extends StatelessWidget {
+class MainButtons extends StatelessWidget {
   final double screenWidth;
 
-  ChargingButtons({required this.screenWidth});
+  MainButtons({required this.screenWidth});
 
   @override
   Widget build(BuildContext context) {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:workshop/CustomSlideSwitch.dart';
-import 'package:workshop/CustomDialog.dart';
+import 'package:workshop/widgets/CustomSlideSwitch.dart';
+import 'package:workshop/functions/CustomDialog.dart';
 
 class ChargePage extends StatelessWidget {
   final Function() startCharge; // 充電開始
