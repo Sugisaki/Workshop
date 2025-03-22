@@ -5,14 +5,14 @@ class DrumRollNumbers extends StatefulWidget {
   final double fontSize; // フォントサイズ
   final Color textColor; // テキスト色
   final int columnNum; // カラム数
-  final GlobalKey<DrumRollNumbersState> key;
+  final GlobalKey<DrumRollNumbersState>? key;
 
   const DrumRollNumbers({
     this.initialNumbers = const [0, 0],
     this.fontSize = 60.0,
     this.textColor = Colors.white,
     this.columnNum = 2,
-    required this.key
+    this.key
   }) : super(key: key);
 
   @override

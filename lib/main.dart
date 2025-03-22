@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math' as math;
 
-import 'package:workshop/widgets/ProgressArc.dart';
 import 'package:workshop/ChargePage.dart';
+import 'package:workshop/widgets/ProgressArc.dart';
 import 'package:workshop/widgets/DrumRollNumbers.dart';
 import 'package:workshop/widgets/MainFooter.dart';
 import 'package:workshop/widgets/CustomSlideSwitch.dart';
@@ -45,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
       GlobalKey<ProgressArcState>();
   final GlobalKey<DrumRollNumbersState> _drumKey =
       GlobalKey<DrumRollNumbersState>();
-
+  bool chargeCompleted = false; // 充電完了
   void _startAnimation() {
     _progressArcKey.currentState!.resetAnimation(); // アニメーション
     _drumKey.currentState!.startRolling([0, 9]); // アニメーション
@@ -67,6 +67,8 @@ class _MyHomePageState extends State<MyHomePage> {
     print('Label Large: ${textTheme.labelLarge?.fontSize}');
     print('Label Medium: ${textTheme.labelMedium?.fontSize}');
     print('Label Small: ${textTheme.labelSmall?.fontSize}');
+
+    double fontSizeM = textTheme.bodyMedium?.fontSize ?? 14;
 
     return Scaffold(
       body: SafeArea(
@@ -120,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           Text("ただいま充電中",
                               style: TextStyle(
-                                fontSize: textTheme.labelSmall?.fontSize,
+                                fontSize: fontSizeM * 0.8,
                                 color: Colors.white,
                               )
                           )
@@ -142,6 +144,12 @@ class _MyHomePageState extends State<MyHomePage> {
                           endCapRadius: 10.0,
                           startAngle: -math.pi * 1 / 2 + (math.pi * 0.2), // 1時の方向
                           endAngle: math.pi * 3 / 2 - (math.pi * 0.2), // 11時の方向
+                          onAnimationCompleted: () {
+                            // アニメーション完了
+                            setState(() {
+                              chargeCompleted = true;
+                            });
+                          },
                           key: _progressArcKey,
                         ),
                       ),
@@ -163,8 +171,9 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                       ),
-                      // ドラムロール
-                      Positioned(
+                      // ドラムロール（充電未完から startRolling でアニメーション）
+                      (!chargeCompleted)
+                      ? Positioned(
                         top: progressArcSize / 4,
                         left: screenWidth * 0,
                         child: Container(
@@ -179,6 +188,26 @@ class _MyHomePageState extends State<MyHomePage> {
                               textColor: Colors.white,
                               fontSize: progressArcSize * 0.22,
                               key: _drumKey,
+                            ),
+                          ),
+                        ),
+                      )
+                      // ドラムロール（充電完了したら　100 を表示）
+                      : Positioned(
+                        top: progressArcSize / 4,
+                        left: screenWidth * 0,
+                        child: Container(
+                          alignment: Alignment.centerRight,
+                          height: progressArcSize / 3,
+                          width: progressArcSize * 2/3 , // 幅　2/3
+                          child: Container(
+                            color: Colors.transparent,
+                            child: DrumRollNumbers(
+                              columnNum: 3,
+                              initialNumbers: const [1, 0, 0],
+                              textColor: Colors.white,
+                              fontSize: progressArcSize * 0.22,
+                              key: null,
                             ),
                           ),
                         ),
@@ -219,9 +248,9 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                               Container(
                                 width: 20,
-                                child: Text(" 0",
+                                child: Text(chargeCompleted ? " 0" : '  ',
                                   style: TextStyle(
-                                    fontSize: textTheme.bodyLarge?.fontSize,
+                                    fontSize: fontSizeM * 1.5,
                                     color: Colors.white
                                   ),
                                 ),
@@ -252,6 +281,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     onSlideLeft: () {
                       print("<<<左");
+                      setState(() {
+                        chargeCompleted = false;
+                      });
                     },
                   ),
                   const SizedBox(height: 16.0),
@@ -280,6 +312,9 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icons.bolt,
             label: '充電',
             onPressed: () {
+              setState(() {
+                chargeCompleted = false;
+              });
               Navigator.push(
                 context,
                 MaterialPageRoute(

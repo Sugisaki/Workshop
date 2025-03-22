@@ -9,15 +9,17 @@ class ProgressArc extends StatefulWidget {
   final double endCapRadius; // 終端円の大きさ
   final double startAngle; // 円弧の始点
   final double endAngle; // 円弧の終点
+  final VoidCallback? onAnimationCompleted;
   final GlobalKey<ProgressArcState> key;
 
-  ProgressArc({
+  const ProgressArc({
     required this.progress,
     required this.color,
     this.strokeWidth = 10.0,
     this.endCapRadius = 15.0,
     this.startAngle = - math.pi,
     this.endAngle = 0,
+    this.onAnimationCompleted,
     required this.key,
   }) : super(key: key);
 
@@ -41,11 +43,18 @@ class ProgressArcState extends State<ProgressArc>
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 1000),
     );
     _animation = Tween<double>(begin: 0, end: widget.progress).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
+    _animationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        if (_animation.value == widget.progress && widget.onAnimationCompleted != null) {
+          widget.onAnimationCompleted!();
+        }
+      }
+    });
     _animationController.forward();
   }
 
