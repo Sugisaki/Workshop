@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 
-/*
-  TODO 桁を増やせるようにするか、3桁にするか
-  TODO 桁が2桁じゃなかったらエラーにしよう
- */
-
 class DrumRollNumber extends StatefulWidget {
   final List<int> initialNumbers; // 数字の初期値
   final double fontSize; // フォントサイズ
   final Color textColor; // テキスト色
+  final int columnNum; // カラム数
   final GlobalKey<DrumRollNumberState> key;
 
   const DrumRollNumber({
     this.initialNumbers = const [0, 0],
     this.fontSize = 60.0,
     this.textColor = Colors.white,
+    this.columnNum = 2,
     required this.key
   }) : super(key: key);
 
@@ -23,25 +20,32 @@ class DrumRollNumber extends StatefulWidget {
 }
 
 class DrumRollNumberState extends State<DrumRollNumber> {
-  final List<List<int>> numbers = [
-    List.generate(10, (index) => index), // 左の桁
-    List.generate(10, (index) => index), // 右の桁
-  ];
+  late final List<List<int>> numbers;
   late final List<FixedExtentScrollController> controllers;
 
   @override
   void initState() {
     super.initState();
-    controllers = [
-      FixedExtentScrollController(initialItem: widget.initialNumbers[0]),
-      FixedExtentScrollController(initialItem: widget.initialNumbers[1]),
-    ];
+    // コントローラを初期化
+    controllers = List.generate(widget.columnNum,
+          (index) => FixedExtentScrollController(
+              initialItem: widget.initialNumbers.length > index ? widget.initialNumbers[index] : 0
+          ),
+    );
+    // 0から9のリストを作成
+    numbers = List.generate(widget.columnNum,
+          (index) => List.generate(10, (index) => index)
+    );
     initRolling(); // 最初の位置に戻す
   }
 
   void initRolling() {
-    controllers[0].jumpToItem(widget.initialNumbers[0]); // 左側の桁の初期値
-    controllers[1].jumpToItem(widget.initialNumbers[1]); // 右側の桁の初期値
+    // 指定された桁数分の初期値をセット
+    for (int i = 0; i < controllers.length; i++) {
+      if (widget.initialNumbers.length > i) {
+        controllers[i].jumpToItem(widget.initialNumbers[i]);
+      }
+    }
   }
 
   void startRolling(List<int> numbers) {
@@ -60,6 +64,7 @@ class DrumRollNumberState extends State<DrumRollNumber> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: widget.fontSize * widget.columnNum,
       color: Colors.transparent,
       child: Row(
         // 数字のドラム（ホイール）を横並びで表示
@@ -80,7 +85,7 @@ class DrumRollNumberState extends State<DrumRollNumber> {
               child: ListWheelScrollView.useDelegate(
                 // 数字のドラム（ホイール）
                 controller: controllers[index],
-                itemExtent: widget.fontSize * 1.2,
+                itemExtent: widget.fontSize * 1.4,
                 physics: const FixedExtentScrollPhysics(),
                 childDelegate: ListWheelChildLoopingListDelegate(
                   children: numbers[index].map((int num) => Text(

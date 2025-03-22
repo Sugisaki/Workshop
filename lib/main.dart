@@ -128,7 +128,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                   ),
-                  Stack(
+                Stack(
+                    clipBehavior: Clip.none, // タイトルを範囲外へ描画
                     children: [
                       // プログレス円弧
                       SizedBox(
@@ -144,38 +145,62 @@ class _MyHomePageState extends State<MyHomePage> {
                           key: _progressArcKey,
                         ),
                       ),
+                      // タイトル Charging
+                      Positioned(
+                        top: -progressArcSize * 0.1,
+                        child:
+                        Container(
+                          width: progressArcSize,
+                          alignment: Alignment.topCenter,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Charging",
+                              style: TextStyle(
+                                fontSize: progressArcSize * 0.1,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      // ドラムロール
                       Positioned(
                         top: progressArcSize / 4,
-                        left: screenWidth / 12,
-                        child: SizedBox(
-                          width: progressArcSize,
-                          height: progressArcSize / 3, //_screenWidth / 6,
-                          child: Row(
-                            children: [
-                              // ドラムロール
-                              Expanded(
-                                child: DrumRollNumber(
-                                  initialNumbers: const [9, 0],
-                                  //textColor: Colors.white,
-                                  fontSize: screenWidth / 8,
-                                  key: _drumKey,
-                                ),
+                        left: screenWidth * 0,
+                        child: Container(
+                          alignment: Alignment.centerRight,
+                          height: progressArcSize / 3,
+                          width: progressArcSize * 2/3 , // 幅　2/3
+                          child: Container(
+                            color: Colors.transparent,
+                            child: DrumRollNumber(
+                              columnNum: 2,
+                              initialNumbers: const [9, 0],
+                              textColor: Colors.white,
+                              fontSize: progressArcSize * 0.22,
+                              key: _drumKey,
+                            ),
+                          ),
+                        ),
+                      ),
+                      // ドラムロールの右に、単位 %
+                      Positioned(
+                        top: progressArcSize / 4,
+                        left: progressArcSize * 2/3, // 幅 2/3
+                        child: Container(
+                          height: progressArcSize / 3, // ドラムロールのコンテナに合わせる
+                          alignment: Alignment.centerLeft,
+                          //color: Colors.black12,
+                          child: Container(
+                            height: progressArcSize * 0.22, // ドラムロールのフォントに合わせる
+                            alignment: Alignment.bottomLeft,
+                            child: Text("%",
+                              style: TextStyle(
+                                fontSize: progressArcSize * 0.1,
+                                color: Colors.white,
+                                fontWeight: FontWeight.normal,
                               ),
-                              // 単位 %
-                              Expanded(
-                                child: Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: Text(
-                                    "%",
-                                    style: TextStyle(
-                                      fontSize: screenWidth / 20,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                       ),

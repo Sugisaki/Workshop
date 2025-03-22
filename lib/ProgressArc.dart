@@ -105,29 +105,27 @@ class _ProgressArcPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // 円弧を描画
     final rect = Rect.fromCircle(
       center: Offset(size.width / 2, size.height / 2),
       radius: math.min(size.width, size.height) / 2 - strokeWidth / 2,
     );
-
     final foregroundPaint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.butt;
-
+      ..strokeCap = StrokeCap.round;
     final sweepAngle = (endAngle - startAngle) * value;
     canvas.drawArc(rect, startAngle, sweepAngle, false, foregroundPaint);
 
+    // 円弧の先端のキャップを描画
     final endCapPaint = Paint()
       ..color = color
       ..style = PaintingStyle.fill;
-
     final radius = rect.shortestSide / 2; // ここで radius を取得
     final endCapAngle = startAngle + sweepAngle;
     final endCapX = rect.center.dx + radius * math.cos(endCapAngle);
     final endCapY = rect.center.dy + radius * math.sin(endCapAngle);
-
     canvas.drawCircle(Offset(endCapX, endCapY), endCapRadius, endCapPaint);
   }
 
